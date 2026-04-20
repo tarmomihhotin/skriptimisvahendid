@@ -1,0 +1,4 @@
+@{
+    WebhookUrl = ""
+    DefaultSeverity = "Info"
+}
