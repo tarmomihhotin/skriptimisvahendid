@@ -34,3 +34,17 @@ $väljundfail = Join-Path -Path (Split-Path -Parent $MyInvocation.MyCommand.Path
 $tulemused | Export-Csv -Path $väljundfail -NoTypeInformation -Encoding UTF8
 
 Write-Host "Tulemus salvestatud: $väljundfail"
+
+Import-Module .\Saada-Teavitus.psm1 -Force
+
+foreach ($fail in $tulemused) {
+
+    $baite = (Get-Item $fail.Tee -ErrorAction SilentlyContinue).Length
+
+    if ($baite -ge 5GB) {
+        Send-AlertMessage -Message "Väga suur fail: $($fail.Nimi) ($($fail.Suurus))" -Severity Critical
+    }
+    elseif ($baite -ge 1GB) {
+        Send-AlertMessage -Message "Suur fail: $($fail.Nimi) ($($fail.Suurus))" -Severity Warning
+    }
+}
